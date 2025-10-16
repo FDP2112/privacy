@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Account & Data Deletion – Paloma AI</title>
+    <style>
+      :root { --w: 820px; }
+      body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; margin: 0; }
+      main { max-width: var(--w); margin: 2.5rem auto; padding: 0 1rem; }
+      h1 { font-size: clamp(1.8rem, 2.5vw, 2.2rem); margin-bottom: 0.25rem; }
+      h2 { font-size: 1.25rem; margin-top: 2rem; }
+      p.muted { color: #666; }
+      .card { background: #f8f9fb; border: 1px solid #e6e8eb; border-radius: 10px; padding: 1rem; }
+      label { display:block; margin-top:.75rem; font-weight:600; }
+      input, textarea, select { width:100%; padding:.65rem .7rem; border:1px solid #d0d4da; border-radius:10px; font:inherit; }
+      small { color:#555; }
+      button { margin-top:1rem; padding:.7rem 1rem; border:0; background:#0d6efd; color:#fff; border-radius:10px; font:inherit; cursor:pointer; }
+      button.secondary { background:#4b5563; }
+      .grid { display:grid; grid-template-columns: 1fr 1fr; gap:1rem; }
+      .grid > div { min-width:0; }
+      ul { padding-left: 1.1rem; }
+      footer { margin-top: 3rem; color:#444; font-size:.95rem; }
+      .ok { color:#155724; background:#e6f4ea; border:1px solid #ccebd7; padding:.6rem .8rem; border-radius:10px; }
+      .warn { color:#7a3e00; background:#fff3cd; border:1px solid #ffe8a1; padding:.6rem .8rem; border-radius:10px; }
+      a.btn { display:inline-block; margin-top:.75rem; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>Account & Data Deletion</h1>
+        <p class="muted">Use this page to request deletion of your Paloma AI account and associated data.</p>
+      </header>
+
+      <section class="card">
+        <h2>How deletion works</h2>
+        <ul>
+          <li>We permanently delete your account profile, token balance, and stored processed videos.</li>
+          <li>Original uploads and processed results in cloud storage are removed. Some records may be retained where legally required (e.g., fraud prevention, billing).</li>
+          <li>We aim to complete verified requests within <strong>30 days</strong>.</li>
+        </ul>
+        <p class="warn"><strong>Subscriptions:</strong> If you purchased a subscription through Apple App Store or Google Play, please cancel it in your store account to stop future charges. Deleting your account does not automatically cancel store subscriptions.</p>
+      </section>
+
+      <section>
+        <h2>Request via Email</h2>
+        <p>Fill the form below and click <em>Generate email</em>. Your email app will open with a pre-filled message.</p>
+        <div class="grid">
+          <div>
+            <label for="email">Your email (used in Paloma AI)</label>
+            <input id="email" type="email" placeholder="you@example.com" required />
+          </div>
+          <div>
+            <label for="userid">User ID (if known)</label>
+            <input id="userid" type="text" placeholder="Optional" />
+          </div>
+        </div>
+        <label for="reason">Reason (optional)</label>
+        <textarea id="reason" rows="3" placeholder="Optional"></textarea>
+        <label><input id="confirm" type="checkbox" /> I confirm I am the account owner and want my account and data deleted.</label>
+        <button id="mailtoBtn" disabled>Generate email</button>
+        <p class="muted">We’ll reply to verify your identity and confirm deletion.</p>
+      </section>
+
+      <section class="card">
+        <h2>What will be deleted</h2>
+        <ul>
+          <li>Account profile (email, name, avatar)</li>
+          <li>Stored videos and AI results associated with your account</li>
+          <li>Usage analytics tied to your account</li>
+        </ul>
+        <p><small>We may keep minimal records as required by law (for example, payment receipts or security logs) for the period mandated by applicable regulations.</small></p>
+      </section>
+
+      <footer>
+        <p>Questions? Email us at <a id="contactEmail" href="mailto:palomaai@outlook.com">palomaai@outlook.com</a>.</p>
+        <p>See also: <a href="/privacy" rel="noopener">Privacy Policy</a></p>
+      </footer>
+    </main>
+
+    <script>
+      // TODO: replace with your real deletion inbox
+      const DELETION_EMAIL = 'palomaai@outlook.com';
+
+      const emailInput = document.getElementById('email');
+      const idInput = document.getElementById('userid');
+      const reasonInput = document.getElementById('reason');
+      const confirmBox = document.getElementById('confirm');
+      const btn = document.getElementById('mailtoBtn');
+      const contactEmail = document.getElementById('contactEmail');
+
+      contactEmail.href = `mailto:${DELETION_EMAIL}`;
+      contactEmail.textContent = DELETION_EMAIL;
+
+      function updateBtn() {
+        btn.disabled = !(emailInput.value && confirmBox.checked);
+      }
+      emailInput.addEventListener('input', updateBtn);
+      confirmBox.addEventListener('change', updateBtn);
+
+      btn.addEventListener('click', () => {
+        const userEmail = emailInput.value.trim();
+        if (!userEmail || !confirmBox.checked) return;
+
+        const subject = encodeURIComponent('Account & Data Deletion Request');
+        const bodyLines = [
+          `Please delete my Paloma AI account and associated data.`,
+          '',
+          `Account email: ${userEmail}`,
+          `User ID: ${idInput.value.trim() || 'N/A'}`,
+          `Reason: ${reasonInput.value.trim() || 'N/A'}`,
+          '',
+          'I confirm I am the account owner.'
+        ];
+        const body = encodeURIComponent(bodyLines.join('\n'));
+        window.location.href = `mailto:${DELETION_EMAIL}?subject=${subject}&body=${body}`;
+      });
+    </script>
+  </body>
+</html>
